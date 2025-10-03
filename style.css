@@ -81,3 +81,13 @@ header{
 .black{ background: linear-gradient(180deg,#c69a6b,#b58863) }
 .selected{ box-shadow:0 0 0 4px rgba(255,215,0,0.16) }
 .move{ background: rgba(24,156,86,0.14) !important }
+
+.game-controls{ text-align:right }
+.restart-btn{
+  background: var(--accent); color:white; border:none; padding:8px 14px; border-radius:6px; font-weight:600; cursor:pointer; margin-top:8px; transition:background 150ms ease;
+}
+.restart-btn:hover{ background: #0a5; }
+
+.hidden{
+  display:none;
+}
