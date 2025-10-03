@@ -15,6 +15,7 @@ let selectedCell = null;
 let selectedPos = null;
 let gameState = JSON.parse(JSON.stringify(initialBoard)); // Deep copy
 let turn = 'white'; // 'white' or 'black'
+let gameOver = false;
 // AI settings
 let aiEnabled = false;
 let aiColor = 'black';
@@ -103,6 +104,7 @@ function pieceToImageSrc(pieceSym) {
 // Simple move logic: select a piece, then move to empty square or capture
 function onCellClick(e) {
   const cell = e.currentTarget;
+  if (gameOver) return;
   const r = parseInt(cell.dataset.row, 10);
   const c = parseInt(cell.dataset.col, 10);
   const piece = gameState[r][c];
@@ -164,6 +166,7 @@ function maybeTriggerAI() {
 
 // Simple AI: choose a random legal move for the AI color
 function aiMakeMove() {
+  if (gameOver) return;
   // collect all legal moves for AI pieces
   const moves = [];
   for (let r = 0; r < 8; r++) {
@@ -183,10 +186,26 @@ function aiMakeMove() {
 }
 
 function performMove(sr, sc, tr, tc) {
+  if (gameOver) return;
   const piece = gameState[sr][sc];
+  const capturedPiece = gameState[tr][tc];
+
   // Move
   gameState[tr][tc] = piece;
   gameState[sr][sc] = "";
+
+  // Check for win condition (king capture)
+  if (capturedPiece === '♔') { // White king captured
+    gameOver = true;
+    updateStatus('Black');
+    return;
+  }
+  if (capturedPiece === '♚') { // Black king captured
+    gameOver = true;
+    updateStatus('White');
+    return;
+  }
+
 
   // Pawn promotion (auto-queen)
   if (piece === '♙' && tr === 0) gameState[tr][tc] = '♕';
@@ -310,9 +329,38 @@ function getLegalMoves(r, c, piece) {
   return moves;
 }
 
-function updateStatus() {
+function updateStatus(winner) {
   const el = document.getElementById('status');
-  if (el) el.textContent = `Turn: ${turn[0].toUpperCase() + turn.slice(1)}`;
+  const restartBtn = document.getElementById('restartBtn');
+  if (!el) return;
+
+  if (winner) {
+    el.textContent = `${winner} wins!`;
+    if (restartBtn) restartBtn.classList.remove('hidden');
+  } else {
+    el.textContent = `Turn: ${turn[0].toUpperCase() + turn.slice(1)}`;
+    if (restartBtn) restartBtn.classList.add('hidden');
+  }
+}
+
+function resetGame() {
+  gameState = JSON.parse(JSON.stringify(initialBoard));
+  turn = 'white';
+  gameOver = false;
+  selectedCell = null;
+  selectedPos = null;
+  clearHighlights();
+  renderBoard();
+  updateStatus();
+  maybeTriggerAI();
+}
+
+function initControls() {
+  initAIControls();
+  const restartBtn = document.getElementById('restartBtn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', resetGame);
+  }
 }
 
 // initial status
@@ -369,4 +417,4 @@ if (!document.getElementById('debug')) {
 
 preloadPieceImages();
 // initialize AI UI hooks
-initAIControls();
+initControls();
