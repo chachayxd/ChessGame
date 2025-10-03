@@ -2,39 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Simple Chess Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A simple, playable chess game built with HTML, CSS, and JavaScript.">
+  <title>Simple Chess</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="app-card">
-  <header>
-    <div class="header-inner">
-      <div class="brand">
-        <img class="logo" src="assets/chess-logo.png" alt="chess logo" width="56" height="56" onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/4363/4363846.png'">
-        <div class="title-text">
-          <h1>Simple Chess Game</h1>
-          <p>Created by Joshua Babelonia</p>
+    <header>
+      <div class="header-inner">
+        <div class="brand">
+          <img class="logo" src="assets/chess-logo.png" alt="Chess piece logo" width="56" height="56" onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/4363/4363846.png'">
+          <div class="title-text">
+            <h1>Simple Chess</h1>
+          </div>
+        </div>
+        <div class="game-info">
+          <div id="status" class="status">Turn: White</div>
+          <div class="controls">
+            <label><input type="checkbox" id="aiToggle"> Enable AI</label>
+            <label for="aiColor">AI plays:</label>
+            <select id="aiColor">
+              <option value="black">Black</option>
+              <option value="white">White</option>
+            </select>
+            <button id="restartBtn" class="restart-btn hidden">Restart Game</button>
+          </div>
         </div>
       </div>
-      <div class="game-info">
-        <div id="status" class="status">Turn: White</div>
-        <div class="controls">
-          <label><input type="checkbox" id="aiToggle"> Enable AI</label>
-          <label for="aiColor">AI plays:</label>
-          <select id="aiColor">
-            <option value="black">Black</option>
-            <option value="white">White</option>
-          </select>
-          <button id="restartBtn" class="restart-btn hidden">Restart Game</button>
-        </div>
-      </div>
+    </header>
+    <div class="game-body">
+      <div class="captured-pieces" id="white-captured" aria-label="White's captured pieces"></div>
+      <div class="board" id="chessboard" aria-label="Chess board"></div>
+      <div class="captured-pieces" id="black-captured" aria-label="Black's captured pieces"></div>
     </div>
-  </header>
-  <div class="game-body">
-    <div class="captured-pieces" id="white-captured"></div>
-    <div class="board" id="chessboard"></div>
-    <div class="captured-pieces" id="black-captured"></div>
-  </div>
+    <footer>
+      <p class="attribution">Created by Joshua Babelonia</p>
+    </footer>
   </main>
   <script src="game.js"></script>
 
