@@ -16,7 +16,7 @@
           <p>Created by Joshua Babelonia</p>
         </div>
       </div>
-      <div class="game-controls">
+      <div class="game-info">
         <div id="status" class="status">Turn: White</div>
         <div class="controls">
           <label><input type="checkbox" id="aiToggle"> Enable AI</label>
@@ -25,12 +25,16 @@
             <option value="black">Black</option>
             <option value="white">White</option>
           </select>
+          <button id="restartBtn" class="restart-btn hidden">Restart Game</button>
         </div>
-        <button id="restartBtn" class="restart-btn hidden">Restart Game</button>
       </div>
     </div>
   </header>
-  <div class="board" id="chessboard"></div>
+  <div class="game-body">
+    <div class="captured-pieces" id="white-captured"></div>
+    <div class="board" id="chessboard"></div>
+    <div class="captured-pieces" id="black-captured"></div>
+  </div>
   </main>
   <script src="game.js"></script>
 
