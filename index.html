@@ -15,11 +15,17 @@
       </div>
     </div>
     <div id="status">Turn: White</div>
+    <div class="controls">
+      <label><input type="checkbox" id="aiToggle"> Enable AI opponent</label>
+      <label for="aiColor">AI plays as:</label>
+      <select id="aiColor">
+        <option value="black">Black</option>
+        <option value="white">White</option>
+      </select>
+    </div>
   </header>
   <div class="board" id="chessboard"></div>
   <script src="game.js"></script>
 
 </body>
-
-</div>
 </html>
