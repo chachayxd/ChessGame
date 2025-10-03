@@ -5,7 +5,11 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #fff 0%, #000 100%);
+  /* Use the provided chess background image with the gradient as a fallback */
+  background-image: url('chess-background.png'), linear-gradient(135deg, #fff 0%, #000 100%);
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
 }
 
 header {
@@ -51,7 +55,8 @@ header {
   margin: 0 auto;
   width: 480px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-  background: #222;
+  /* Slight translucency so the page background/texture shows through the board frame */
+  background: rgba(255,255,255,0.65);
 }
 .cell {
   width: 60px;
