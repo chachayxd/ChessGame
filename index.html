@@ -3,14 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Simple Chess Game</title>
-  <style>
-    .board { display: grid; grid-template: repeat(8, 60px) / repeat(8, 60px); }
-    .cell { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 2.5em; }
-    .white { background: #f0d9b5; }
-    .black { background: #b58863; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header>
+    <div class="title-row">
+  <img class="logo" src="assets/chess-logo.png" alt="chess logo" width="48" height="48" onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/4363/4363846.png'">
+      <div class="title-text">
+        <h1>Simple Chess Game</h1>
+        <p>Created by Joshua Babelonia</p>
+      </div>
+    </div>
+    <div id="status">Turn: White</div>
+    <small class="attribution">Icon by <a href="https://www.flaticon.com/free-icon/chess_4363846?related_id=4363795&origin=search" target="_blank" rel="noopener noreferrer">Flaticon</a></small>
+  </header>
   <div class="board" id="chessboard"></div>
   <script>
     // Unicode symbols for pieces
