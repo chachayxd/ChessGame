@@ -15,6 +15,22 @@ let selectedCell = null;
 let selectedPos = null;
 let gameState = JSON.parse(JSON.stringify(initialBoard)); // Deep copy
 let turn = 'white'; // 'white' or 'black'
+// AI settings
+let aiEnabled = false;
+let aiColor = 'black';
+
+// Hook UI elements (if present)
+function initAIControls() {
+  const toggle = document.getElementById('aiToggle');
+  const select = document.getElementById('aiColor');
+  if (toggle) {
+    toggle.addEventListener('change', (e) => { aiEnabled = e.target.checked; maybeTriggerAI(); });
+  }
+  if (select) {
+    select.addEventListener('change', (e) => { aiColor = e.target.value; maybeTriggerAI(); });
+    aiColor = select.value;
+  }
+}
 
 // Map unicode piece symbols to image filenames (place images in ./pieces/)
 const pieceImageMap = {
@@ -136,6 +152,36 @@ function onCellClick(e) {
   }
 }
 
+// After each human move, if AI is enabled and it's the AI's turn, trigger it
+function maybeTriggerAI() {
+  // If AI not enabled, do nothing
+  if (!aiEnabled) return;
+  // If it's AI's turn, make a move after a short delay
+  if (turn === aiColor) {
+    setTimeout(() => aiMakeMove(), 400);
+  }
+}
+
+// Simple AI: choose a random legal move for the AI color
+function aiMakeMove() {
+  // collect all legal moves for AI pieces
+  const moves = [];
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const piece = gameState[r][c];
+      if (!piece) continue;
+      if (pieceColor(piece) !== aiColor) continue;
+      const legal = getLegalMoves(r, c, piece);
+      legal.forEach(m => moves.push({ sr: r, sc: c, tr: m.r, tc: m.c }));
+    }
+  }
+  if (moves.length === 0) return; // no move available
+  const choice = moves[Math.floor(Math.random() * moves.length)];
+  performMove(choice.sr, choice.sc, choice.tr, choice.tc);
+  clearHighlights();
+  renderBoard();
+}
+
 function performMove(sr, sc, tr, tc) {
   const piece = gameState[sr][sc];
   // Move
@@ -149,6 +195,8 @@ function performMove(sr, sc, tr, tc) {
   // Switch turn
   turn = (turn === 'white') ? 'black' : 'white';
   updateStatus();
+  // If AI is enabled and it's now AI's turn, trigger it
+  maybeTriggerAI();
 }
 
 // Determine piece color by symbol
@@ -257,3 +305,5 @@ if (!document.getElementById('debug')) {
 }
 
 preloadPieceImages();
+// initialize AI UI hooks
+initAIControls();
