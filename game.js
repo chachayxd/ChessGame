@@ -231,15 +231,78 @@ function getLegalMoves(r, c, piece) {
     if (r + 1 < 8 && c - 1 >= 0 && pieceColor(gameState[r+1][c-1]) === 'white') moves.push({ r: r+1, c: c-1 });
     if (r + 1 < 8 && c + 1 < 8 && pieceColor(gameState[r+1][c+1]) === 'white') moves.push({ r: r+1, c: c+1 });
   } else {
-    // For non-pawn pieces: allow moving to any empty square or capturing adjacent squares as a simple fallback
-    for (let dr = -1; dr <= 1; dr++) {
-      for (let dc = -1; dc <= 1; dc++) {
-        if (dr === 0 && dc === 0) continue;
-        const nr = r + dr, nc = c + dc;
+    // Determine piece type by its symbol and generate moves accordingly
+    const sym = piece;
+    // Helper: push if on board and either empty or opponent
+    function pushIfOK(nr, nc) {
+      if (nr < 0 || nr >= 8 || nc < 0 || nc >= 8) return false;
+      const tgt = gameState[nr][nc];
+      if (tgt === '') {
+        moves.push({ r: nr, c: nc });
+        return true; // empty square, sliding pieces can continue
+      }
+      if (pieceColor(tgt) !== color) {
+        moves.push({ r: nr, c: nc });
+      }
+      return false; // occupied, sliding pieces must stop
+    }
+
+    // Knight (horse) moves: L-shaped
+    if (sym === '♘' || sym === '♞') {
+      const deltas = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+      deltas.forEach(d => {
+        const nr = r + d[0], nc = c + d[1];
         if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
-          const target = gameState[nr][nc];
-          if (target === '' || pieceColor(target) !== color) moves.push({ r: nr, c: nc });
+          const tgt = gameState[nr][nc];
+          if (tgt === '' || pieceColor(tgt) !== color) moves.push({ r: nr, c: nc });
         }
+      });
+    }
+
+    // King: one square any direction
+    else if (sym === '♔' || sym === '♚') {
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          const nr = r + dr, nc = c + dc;
+          if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+            const tgt = gameState[nr][nc];
+            if (tgt === '' || pieceColor(tgt) !== color) moves.push({ r: nr, c: nc });
+          }
+        }
+      }
+    }
+
+    // Sliding pieces: bishop, rook, queen
+    else {
+      const isBishop = (sym === '♗' || sym === '♝');
+      const isRook = (sym === '♖' || sym === '♜');
+      const isQueen = (sym === '♕' || sym === '♛');
+
+      // Bishop directions (diagonals)
+      if (isBishop || isQueen) {
+        const dirs = [[-1,-1],[-1,1],[1,-1],[1,1]];
+        dirs.forEach(d => {
+          let nr = r + d[0], nc = c + d[1];
+          while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+            const cont = pushIfOK(nr, nc);
+            if (!cont) break;
+            nr += d[0]; nc += d[1];
+          }
+        });
+      }
+
+      // Rook directions (orthogonal)
+      if (isRook || isQueen) {
+        const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+        dirs.forEach(d => {
+          let nr = r + d[0], nc = c + d[1];
+          while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+            const cont = pushIfOK(nr, nc);
+            if (!cont) break;
+            nr += d[0]; nc += d[1];
+          }
+        });
       }
     }
   }
