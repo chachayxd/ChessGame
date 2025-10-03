@@ -16,6 +16,22 @@ let selectedPos = null;
 let gameState = JSON.parse(JSON.stringify(initialBoard)); // Deep copy
 let turn = 'white'; // 'white' or 'black'
 
+// Map unicode piece symbols to image filenames (place images in ./pieces/)
+const pieceImageMap = {
+  '♖': 'rook-chess-white.png',
+  '♜': 'rook-chess-black.png',
+  '♘': 'horse-chess-white.png',
+  '♞': 'horse-chess-black.png',
+  '♗': 'bishop-chess-white.png',
+  '♝': 'bishop-chess-black.png',
+  '♙': 'pawn-chess-white.png',
+  '♟': 'pawn-chess-black.png',
+  '♕': 'queen-chess-white.png',
+  '♛': 'queen-chess-black.png',
+  '♔': 'king-chess-white.png',
+  '♚': 'king-chess-black.png'
+};
+
 // Helper to clear highlights
 function clearHighlights() {
   document.querySelectorAll('.cell').forEach(cell => {
@@ -32,7 +48,16 @@ function renderBoard() {
     for (let c = 0; c < 8; c++) {
       const cell = document.createElement('div');
       cell.className = 'cell ' + ((r + c) % 2 ? 'black' : 'white');
-      cell.textContent = gameState[r][c];
+      // Render image if present in pieces/, otherwise fall back to unicode
+      const pieceSym = gameState[r][c];
+      const imgSrc = pieceToImageSrc(pieceSym);
+      if (imgSrc) {
+        // include a data-symbol and an onerror handler to fall back to the unicode if image fails to load
+        const safeSym = pieceSym || '';
+        cell.innerHTML = `<img src="${imgSrc}" class="piece-img" alt="" data-symbol="${safeSym}" onerror="this.parentElement.textContent=this.dataset.symbol">`;
+      } else {
+        cell.textContent = pieceSym;
+      }
       cell.dataset.row = r;
       cell.dataset.col = c;
       cell.addEventListener('click', onCellClick);
@@ -48,6 +73,14 @@ function renderBoard() {
       board.appendChild(cell);
     }
   }
+}
+
+function pieceToImageSrc(pieceSym) {
+  if (!pieceSym) return null;
+  const file = pieceImageMap[pieceSym];
+  if (!file) return null;
+  // Return a relative path to the pieces folder
+  return `pieces/${file}`;
 }
 
 // Simple move logic: select a piece, then move to empty square or capture
@@ -173,4 +206,52 @@ function updateStatus() {
 // initial status
 updateStatus();
 
-renderBoard();
+// Debug: preload piece images to detect missing files and help diagnose why images aren't used
+function preloadPieceImages() {
+  const files = Array.from(new Set(Object.values(pieceImageMap)));
+  const missing = [];
+  let remaining = files.length;
+  if (remaining === 0) {
+    renderBoard();
+    return;
+  }
+  files.forEach(file => {
+    const img = new Image();
+    img.onload = () => {
+      console.log('[pieces] loaded:', file);
+      remaining -= 1;
+      if (remaining === 0) finish();
+    };
+    img.onerror = () => {
+      console.warn('[pieces] missing or failed to load:', file);
+      missing.push(file);
+      remaining -= 1;
+      if (remaining === 0) finish();
+    };
+    img.src = `pieces/${file}`;
+  });
+
+  function finish() {
+    const dbg = document.getElementById('debug');
+    if (missing.length) {
+      const msg = 'Missing piece images: ' + missing.join(', ');
+      console.warn(msg);
+      if (dbg) dbg.textContent = msg + ' — check filenames in the pieces/ folder.';
+    } else {
+      if (dbg) dbg.textContent = 'All piece images loaded.';
+    }
+    renderBoard();
+  }
+}
+
+// create debug element if missing
+if (!document.getElementById('debug')) {
+  const header = document.querySelector('header');
+  if (header) {
+    const div = document.createElement('div');
+    div.id = 'debug';
+    header.appendChild(div);
+  }
+}
+
+preloadPieceImages();
