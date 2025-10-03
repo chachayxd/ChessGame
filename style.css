@@ -1,83 +1,83 @@
+:root{
+  --card-bg: rgba(255,255,255,0.92);
+  --muted: #556;
+  --accent: #0b6;
+  --danger: #d9534f;
+}
+
+*{box-sizing:border-box}
 body {
   min-height: 100vh;
   margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* Use the provided chess background image with the gradient as a fallback */
-  background-image: url('chess-background.png'), linear-gradient(135deg, #fff 0%, #000 100%);
+  background-image: url('chess-background.png'), linear-gradient(135deg, #f8f9fb 0%, #d8dbe0 100%);
   background-size: cover, cover;
   background-position: center, center;
   background-repeat: no-repeat, no-repeat;
+  padding: 32px;
 }
 
-header {
-  text-align: center;
-  margin-bottom: 24px;
-  color: #222;
-  background: rgba(255,255,255,0.7);
-  border-radius: 10px;
-  padding: 16px 32px 8px 32px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+.app-card{
+  width: min(92vw, 920px);
+  background: var(--card-bg);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(13,20,40,0.12);
 }
 
-.title-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+
+header{
+  margin-bottom: 16px;
 }
 
-.logo {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  border-radius: 6px;
+.header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 16px;
 }
 
-.title-text h1 { margin: 0; }
-.title-text p { margin: 0; font-size: 0.9rem; color: #333; }
+.brand{ display:flex; align-items:center; gap:14px }
+
+.logo{ width:56px;height:56px;object-fit:contain;border-radius:8px;box-shadow:0 3px 10px rgba(10,20,40,0.08) }
+
+.title-text h1 { margin: 0; font-size: 1.25rem; }
+.title-text p { margin: 0; font-size: 0.85rem; color: var(--muted); }
 
 .attribution { display: block; margin-top: 8px; font-size: 0.75rem; color: #444; }
 .attribution a { color: inherit; text-decoration: underline; }
 
-#status {
-  margin-top: 8px;
-  font-weight: 600;
-  color: #111;
-}
+.status{ font-weight:700; color:#111 }
+.controls{ display:flex; gap:10px; align-items:center }
+.controls label{ font-size:0.875rem; color:var(--muted) }
 
-.controls { margin-top: 8px; display: flex; gap: 12px; align-items: center; justify-content: center; }
-.controls label { font-size: 0.9rem; color: #222; }
+.controls select{ padding:6px 8px; border-radius:6px; border:1px solid #dcdfe6 }
 
-.board {
-  display: grid;
-  grid-template: repeat(8, 60px) / repeat(8, 60px);
-  border: 3px solid #222;
-  margin: 0 auto;
-  width: 480px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-  /* Slight translucency so the page background/texture shows through the board frame */
-  background: rgba(255,255,255,0.65);
+.controls input[type="checkbox"]{ transform:scale(1.05); margin-right:6px }
+
+.board{
+  display:grid;
+  grid-template: repeat(8, 64px) / repeat(8, 64px);
+  gap:0;
+  width: calc(64px * 8);
+  margin: 12px auto;
+  border-radius:10px;
+  padding:8px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.03));
+  box-shadow: 0 8px 30px rgba(8,12,20,0.08);
 }
-.cell {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5em;
-  cursor: pointer;
-  user-select: none;
-  box-sizing: border-box;
-  transition: background 0.2s;
+.cell{
+  width:64px; height:64px; display:flex; align-items:center; justify-content:center; font-size:28px; user-select:none; cursor:pointer; transition:all 160ms ease;
 }
-.piece-img { width: 42px; height: 42px; object-fit: contain; pointer-events: none; }
-.cell:focus { outline: 3px solid rgba(0,120,215,0.6); }
-.cell.move { cursor: pointer; }
-.cell.move.capture { background: #f7a6a6 !important; }
-.white { background: #f0d9b5; }
-.black { background: #b58863; }
-.selected { outline: 3px solid gold; }
-.move { background: #b4fcad !important; }
+.piece-img{ width:46px; height:46px; object-fit:contain; pointer-events:none }
+.cell:focus{ outline:3px solid rgba(10,110,230,0.14); }
+.cell:hover{ transform:translateY(-2px); box-shadow:0 6px 14px rgba(8,12,20,0.06) }
+.cell.move{ background: rgba(34,139,34,0.15) !important }
+.cell.capture{ background: rgba(220,20,60,0.14) !important }
+.white{ background: linear-gradient(180deg,#f7ead6,#f0d9b5) }
+.black{ background: linear-gradient(180deg,#c69a6b,#b58863) }
+.selected{ box-shadow:0 0 0 4px rgba(255,215,0,0.16) }
+.move{ background: rgba(24,156,86,0.14) !important }
