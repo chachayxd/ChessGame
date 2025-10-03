@@ -18,10 +18,11 @@ let turn = 'white'; // 'white' or 'black'
 
 // Map unicode piece symbols to image filenames (place images in ./pieces/)
 const pieceImageMap = {
-  '♖': 'rook-chess-white.png',
-  '♜': 'rook-chess-black.png',
-  '♘': 'horse-chess-white.png',
-  '♞': 'horse-chess-black.png',
+  // swapped so the white symbol uses the black image and vice-versa per user request
+  '♖': 'rook-chess-black.png',
+  '♜': 'rook-chess-white.png',
+  '♘': 'horse-chess-black.png',
+  '♞': 'horse-chess-white.png',
   '♗': 'bishop-chess-white.png',
   '♝': 'bishop-chess-black.png',
   '♙': 'pawn-chess-white.png',
@@ -238,7 +239,8 @@ function preloadPieceImages() {
       console.warn(msg);
       if (dbg) dbg.textContent = msg + ' — check filenames in the pieces/ folder.';
     } else {
-      if (dbg) dbg.textContent = 'All piece images loaded.';
+      // Do not display a positive "All piece images loaded" message — keep the debug area empty when all is well.
+      if (dbg) dbg.textContent = '';
     }
     renderBoard();
   }
