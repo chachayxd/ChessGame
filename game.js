@@ -17,6 +17,8 @@ let gameState = JSON.parse(JSON.stringify(initialBoard)); // Deep copy
 let turn = 'white'; // 'white' or 'black'
 let gameOver = false;
 // AI settings
+let whiteCaptured = [];
+let blackCaptured = [];
 let aiEnabled = false;
 let aiColor = 'black';
 
@@ -91,6 +93,7 @@ function renderBoard() {
       board.appendChild(cell);
     }
   }
+  renderCapturedPieces();
 }
 
 function pieceToImageSrc(pieceSym) {
@@ -99,6 +102,24 @@ function pieceToImageSrc(pieceSym) {
   if (!file) return null;
   // Return a relative path to the pieces folder
   return `pieces/${file}`;
+}
+
+function renderCapturedPieces() {
+  const wc = document.getElementById('white-captured');
+  const bc = document.getElementById('black-captured');
+  if (!wc || !bc) return;
+
+  wc.innerHTML = '';
+  whiteCaptured.forEach(p => {
+    const imgSrc = pieceToImageSrc(p);
+    if (imgSrc) wc.innerHTML += `<img src="${imgSrc}" class="piece-img" alt="">`;
+  });
+
+  bc.innerHTML = '';
+  blackCaptured.forEach(p => {
+    const imgSrc = pieceToImageSrc(p);
+    if (imgSrc) bc.innerHTML += `<img src="${imgSrc}" class="piece-img" alt="">`;
+  });
 }
 
 // Simple move logic: select a piece, then move to empty square or capture
@@ -188,28 +209,42 @@ function aiMakeMove() {
 function performMove(sr, sc, tr, tc) {
   if (gameOver) return;
   const piece = gameState[sr][sc];
-  const capturedPiece = gameState[tr][tc];
+  let capturedPiece = gameState[tr][tc];
 
-  // Move
-  gameState[tr][tc] = piece;
-  gameState[sr][sc] = "";
+  // Handle capture animation
+  const targetCell = document.querySelector(`.cell[data-row="${tr}"][data-col="${tc}"]`);
+  const targetImg = targetCell ? targetCell.querySelector('.piece-img') : null;
 
-  // Check for win condition (king capture)
-  if (capturedPiece === '♔') { // White king captured
-    gameOver = true;
-    updateStatus('Black');
-    return;
-  }
-  if (capturedPiece === '♚') { // Black king captured
-    gameOver = true;
-    updateStatus('White');
-    return;
+  if (capturedPiece && targetImg) {
+    targetImg.classList.add('captured');
+    // Add to captured array
+    if (pieceColor(capturedPiece) === 'white') {
+      whiteCaptured.push(capturedPiece);
+    } else {
+      blackCaptured.push(capturedPiece);
+    }
   }
 
+  // Delay the rest of the move logic to allow animation to be seen
+  setTimeout(() => {
+    // Move
+    gameState[tr][tc] = piece;
+    gameState[sr][sc] = "";
 
-  // Pawn promotion (auto-queen)
-  if (piece === '♙' && tr === 0) gameState[tr][tc] = '♕';
-  if (piece === '♟' && tr === 7) gameState[tr][tc] = '♛';
+    // Check for win condition (king capture)
+    if (capturedPiece === '♔' || capturedPiece === '♚') {
+      gameOver = true;
+      updateStatus(capturedPiece === '♔' ? 'Black' : 'White');
+      renderBoard(); // Final render
+      return;
+    }
+
+    // Pawn promotion (auto-queen)
+    if (piece === '♙' && tr === 0) gameState[tr][tc] = '♕';
+    if (piece === '♟' && tr === 7) gameState[tr][tc] = '♛';
+
+    renderBoard(); // Re-render the board after state change
+  }, 200); // 200ms delay matches animation
 
   // Switch turn
   turn = (turn === 'white') ? 'black' : 'white';
@@ -349,6 +384,8 @@ function resetGame() {
   gameOver = false;
   selectedCell = null;
   selectedPos = null;
+  whiteCaptured = [];
+  blackCaptured = [];
   clearHighlights();
   renderBoard();
   updateStatus();
