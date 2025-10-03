@@ -48,6 +48,9 @@ header {
   color: #111;
 }
 
+.controls { margin-top: 8px; display: flex; gap: 12px; align-items: center; justify-content: center; }
+.controls label { font-size: 0.9rem; color: #222; }
+
 .board {
   display: grid;
   grid-template: repeat(8, 60px) / repeat(8, 60px);
