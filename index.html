@@ -6,25 +6,31 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <main class="app-card">
   <header>
-    <div class="title-row">
-  <img class="logo" src="assets/chess-logo.png" alt="chess logo" width="48" height="48" onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/4363/4363846.png'">
-      <div class="title-text">
-        <h1>Simple Chess Game</h1>
-        <p>Created by Joshua Babelonia</p>
+    <div class="header-inner">
+      <div class="brand">
+        <img class="logo" src="assets/chess-logo.png" alt="chess logo" width="56" height="56" onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/4363/4363846.png'">
+        <div class="title-text">
+          <h1>Simple Chess Game</h1>
+          <p>Created by Joshua Babelonia</p>
+        </div>
       </div>
-    </div>
-    <div id="status">Turn: White</div>
-    <div class="controls">
-      <label><input type="checkbox" id="aiToggle"> Enable AI opponent</label>
-      <label for="aiColor">AI plays as:</label>
-      <select id="aiColor">
-        <option value="black">Black</option>
-        <option value="white">White</option>
-      </select>
+      <div class="controls-right">
+        <div id="status" class="status">Turn: White</div>
+        <div class="controls">
+          <label><input type="checkbox" id="aiToggle"> Enable AI</label>
+          <label for="aiColor">AI plays:</label>
+          <select id="aiColor">
+            <option value="black">Black</option>
+            <option value="white">White</option>
+          </select>
+        </div>
+      </div>
     </div>
   </header>
   <div class="board" id="chessboard"></div>
+  </main>
   <script src="game.js"></script>
 
 </body>
