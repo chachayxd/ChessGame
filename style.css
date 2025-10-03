@@ -8,25 +8,6 @@ body {
   background: linear-gradient(135deg, #fff 0%, #000 100%);
 }
 
-.bat {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  top: -128px;
-  left: -128px;
-  transform: scale(4);
-  position: relative;
-  background: rgba(0,0,0,0.7);
-  color: #0f0;
-  font-family: monospace;
-  font-size: 12px;
-  padding: 8px;
-  max-width: 300px;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 1000;
-}
-
 header {
   text-align: center;
   margin-bottom: 24px;
